@@ -1,0 +1,51 @@
+{
+  "manifest_version": 3,
+  "name": "iCorsi Course Assistant (personale)",
+  "version": "0.1.0",
+  "description": "Sidebar personale per iCorsi: indicizza i materiali del corso che puoi già aprire (PDF, pagine) e permette di interrogarli localmente. Prototipo MVP, solo uso personale.",
+  "permissions": [
+    "storage",
+    "unlimitedStorage",
+    "declarativeNetRequestWithHostAccess"
+  ],
+  "host_permissions": [
+    "http://localhost:11434/*",
+    "http://127.0.0.1:11434/*"
+  ],
+  "declarative_net_request": {
+    "rule_resources": [
+      {
+        "id": "ollama_origin",
+        "enabled": true,
+        "path": "rules.json"
+      }
+    ]
+  },
+  "background": {
+    "scripts": ["src/background.js"],
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://www.icorsi.ch/*", "https://icorsi.ch/*"],
+      "js": ["src/content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "vendor/pdf.min.mjs",
+        "vendor/pdf.worker.min.mjs",
+        "src/sidebar.css"
+      ],
+      "matches": ["https://www.icorsi.ch/*", "https://icorsi.ch/*"]
+    }
+  ],
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "icorsi-assistant@personal.local",
+      "strict_min_version": "121.0"
+    }
+  }
+}

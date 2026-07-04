@@ -1,0 +1,554 @@
+/* iCorsi Course Assistant — tema ispirato a iCorsi (USI/SUPSI).
+   Shadow DOM: il CSS resta isolato dalla pagina Moodle. */
+
+:host {
+  all: initial;
+  --accent: #b10f86;
+  --accent-dark: #8e086b;
+  --accent-soft: #f8e8f3;
+  --accent-softer: #fdf5fa;
+  --teal: #0aa9b7;
+  --ink: #20242a;
+  --muted: #656b73;
+  --muted-light: #8c929b;
+  --line: #dfe3e8;
+  --surface: #ffffff;
+  --page: #fafbfc;
+  --shadow: 0 18px 44px rgba(32, 36, 42, 0.16);
+  --card-radius: 14px;
+  color: var(--ink);
+}
+
+* {
+  box-sizing: border-box;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+  letter-spacing: 0;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Pulsante flottante, come il bubble AI in basso a destra di iCorsi. */
+#ica-fab {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 2147483646;
+  width: 58px;
+  height: 58px;
+  border: 0;
+  border-radius: 50%;
+  background: #050505;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.28);
+  transition: transform 140ms ease, box-shadow 140ms ease, background 140ms ease;
+}
+
+#ica-fab:hover {
+  background: #171717;
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.34);
+  transform: translateY(-1px);
+}
+
+/* Pannello principale */
+#ica-panel {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  bottom: 16px;
+  z-index: 2147483647;
+  width: 430px;
+  max-width: calc(100vw - 32px);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+  font-size: 14px;
+  color: var(--ink);
+}
+
+#ica-panel.hidden {
+  display: none;
+}
+
+.ica-header {
+  min-height: 64px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 14px 12px 18px;
+  background: #fff;
+  color: var(--ink);
+  border-bottom: 1px solid var(--line);
+}
+
+.ica-title {
+  flex: 1;
+  min-width: 0;
+  font-size: 20px;
+  font-weight: 750;
+  line-height: 1.15;
+  color: var(--ink);
+}
+
+.ica-header button {
+  min-width: 34px;
+  height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: #5f6368;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 120ms ease, color 120ms ease;
+}
+
+.ica-header button:hover {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+#ica-settings-btn {
+  width: auto;
+  min-width: 92px;
+  padding: 0 12px;
+  border-radius: 999px;
+  color: var(--accent);
+}
+
+#ica-close {
+  font-size: 22px;
+  line-height: 1;
+}
+
+#ica-uilang {
+  font-size: 11px;
+  letter-spacing: 0.04em;
+}
+
+/* Impostazioni */
+#ica-settings {
+  max-height: min(66vh, 560px);
+  overflow-y: auto;
+  background: var(--accent-softer);
+  border-bottom: 1px solid var(--line);
+}
+
+#ica-settings.hidden {
+  display: none;
+}
+
+.ica-settings-inner {
+  padding: 16px 18px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.ica-settings-inner label {
+  margin-top: 4px;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--accent-dark);
+}
+
+.ica-settings-inner input[type="text"],
+.ica-settings-inner select,
+.ica-settings-inner textarea {
+  width: 100%;
+  padding: 9px 11px;
+  border: 1px solid #d7dce2;
+  border-radius: 8px;
+  background: #fff;
+  color: var(--ink);
+  font-size: 13px;
+}
+
+.ica-settings-inner textarea {
+  min-height: 82px;
+  resize: vertical;
+  line-height: 1.4;
+}
+
+.ica-settings-inner input:focus,
+.ica-settings-inner select:focus,
+.ica-settings-inner textarea:focus,
+#ica-input:focus {
+  outline: 2px solid rgba(177, 15, 134, 0.2);
+  border-color: var(--accent);
+}
+
+.ica-check {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  text-transform: none !important;
+  font-weight: 500 !important;
+  font-size: 13px !important;
+  line-height: 1.35;
+  color: var(--ink) !important;
+}
+
+.ica-check input {
+  margin-top: 2px;
+  accent-color: var(--accent);
+}
+
+.ica-privacy {
+  margin: 4px 0;
+  padding: 10px 11px;
+  border: 1px solid #ead8e5;
+  border-radius: 8px;
+  background: #fff;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.ica-settings-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ica-settings-row select {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Pulsanti */
+.ica-btn {
+  min-height: 36px;
+  padding: 8px 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--accent);
+  font-size: 13px;
+  font-weight: 650;
+  cursor: pointer;
+  transition: background 120ms ease, border-color 120ms ease, color 120ms ease, transform 120ms ease;
+}
+
+.ica-btn:hover {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.ica-btn:active {
+  transform: translateY(1px);
+}
+
+.ica-btn:disabled {
+  opacity: 0.54;
+  cursor: wait;
+  transform: none;
+}
+
+.ica-primary {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: #fff;
+  box-shadow: 0 5px 14px rgba(177, 15, 134, 0.18);
+}
+
+.ica-primary:hover {
+  border-color: var(--accent-dark);
+  background: var(--accent-dark);
+  color: #fff;
+}
+
+.ica-danger {
+  color: #b3261e;
+}
+
+.ica-danger:hover {
+  border-color: #b3261e;
+  background: #fceeee;
+}
+
+/* Toolbar + stato */
+.ica-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 14px 18px;
+  background: #fff;
+  border-bottom: 1px solid var(--line);
+}
+
+#ica-scan {
+  white-space: nowrap;
+}
+
+#ica-stats {
+  overflow: hidden;
+  color: var(--muted);
+  font-size: 12px;
+  text-align: right;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#ica-status {
+  min-height: 0;
+  padding: 0 18px;
+  color: var(--accent-dark);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+#ica-status:not(:empty) {
+  padding: 9px 18px;
+  background: var(--accent-softer);
+  border-bottom: 1px solid #f0ddea;
+}
+
+/* Messaggi */
+#ica-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background:
+    linear-gradient(#fff, #fff) padding-box,
+    var(--page);
+}
+
+.ica-msg {
+  max-width: 92%;
+  padding: 11px 13px;
+  border-radius: var(--card-radius);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  line-height: 1.48;
+}
+
+.ica-user {
+  align-self: flex-end;
+  background: var(--accent);
+  color: #fff;
+  border-bottom-right-radius: 5px;
+  box-shadow: 0 7px 18px rgba(177, 15, 134, 0.18);
+}
+
+.ica-assistant {
+  align-self: flex-start;
+  background: #fff;
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-bottom-left-radius: 5px;
+  box-shadow: 0 2px 8px rgba(32, 36, 42, 0.05);
+}
+
+/* Elementi Markdown nelle risposte */
+.ica-msg-body p {
+  margin: 0 0 8px;
+  white-space: normal;
+}
+
+.ica-msg-body p:last-child {
+  margin-bottom: 0;
+}
+
+.ica-msg-body ul,
+.ica-msg-body ol {
+  margin: 4px 0 8px;
+  padding-left: 20px;
+  white-space: normal;
+}
+
+.ica-msg-body li {
+  margin: 2px 0;
+}
+
+.ica-msg-body li::marker {
+  color: var(--accent);
+}
+
+.ica-msg-body h3,
+.ica-msg-body h4,
+.ica-msg-body h5,
+.ica-msg-body h6 {
+  margin: 10px 0 6px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--line);
+  color: var(--accent-dark);
+  font-size: 14px;
+  white-space: normal;
+}
+
+.ica-msg-body pre {
+  margin: 8px 0;
+  padding: 10px;
+  overflow-x: auto;
+  border: 1px solid #ead8e5;
+  border-radius: 8px;
+  background: var(--accent-softer);
+}
+
+.ica-msg-body code {
+  padding: 1px 5px;
+  border-radius: 5px;
+  background: var(--accent-soft);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 12px;
+}
+
+.ica-msg-body pre code {
+  padding: 0;
+  background: none;
+}
+
+.ica-msg-body a {
+  color: var(--accent);
+  text-decoration: underline;
+}
+
+.ica-cite {
+  font-weight: 800;
+  color: var(--accent) !important;
+  text-decoration: none !important;
+}
+
+.ica-cite:hover {
+  text-decoration: underline !important;
+}
+
+/* Fonti */
+.ica-sources {
+  margin-top: 10px;
+  padding-top: 9px;
+  border-top: 1px dashed #d7dce2;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.ica-sources-title {
+  color: var(--muted-light);
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.ica-sources a {
+  color: var(--accent);
+  font-size: 12px;
+  text-decoration: none;
+}
+
+.ica-sources a:hover {
+  text-decoration: underline;
+}
+
+/* Comandi rapidi */
+.ica-quick {
+  display: flex;
+  gap: 7px;
+  padding: 11px 18px 8px;
+  overflow-x: auto;
+  background: #fff;
+  border-top: 1px solid var(--line);
+  scrollbar-width: thin;
+}
+
+.ica-chip {
+  flex-shrink: 0;
+  min-height: 32px;
+  padding: 6px 12px;
+  border: 1px solid #ead8e5;
+  border-radius: 999px;
+  background: #fff;
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 650;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background 120ms ease, border-color 120ms ease, color 120ms ease;
+}
+
+.ica-chip:hover {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  color: var(--accent-dark);
+}
+
+/* Riga di input */
+.ica-inputrow {
+  display: flex;
+  align-items: flex-end;
+  gap: 9px;
+  padding: 9px 18px 16px;
+  background: #fff;
+}
+
+#ica-input {
+  flex: 1;
+  min-height: 44px;
+  max-height: 130px;
+  resize: none;
+  padding: 10px 12px;
+  border: 1px solid #d7dce2;
+  border-radius: 10px;
+  background: #fff;
+  color: var(--ink);
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+#ica-input::placeholder {
+  color: #8a9099;
+}
+
+#ica-send {
+  width: 42px;
+  min-width: 42px;
+  height: 42px;
+  padding: 0;
+  border-radius: 50%;
+  font-size: 18px;
+  line-height: 1;
+}
+
+@media (max-width: 520px) {
+  #ica-panel {
+    inset: 0;
+    width: 100vw;
+    max-width: none;
+    border-radius: 0;
+    border-left: 0;
+    border-right: 0;
+  }
+
+  #ica-fab {
+    right: 16px;
+    bottom: 16px;
+  }
+
+  .ica-title {
+    font-size: 18px;
+  }
+}

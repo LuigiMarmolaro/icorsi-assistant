@@ -1,0 +1,14 @@
+# Config locale dell'editor / Claude Code
+.claude/
+
+# Artefatti generati da Chrome quando carica il ruleset declarativeNetRequest
+_metadata/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Pacchetti dell'estensione
+*.zip
+*.xpi
+web-ext-artifacts/
